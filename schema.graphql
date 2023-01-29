@@ -42,3 +42,13 @@ type MintEvent @entity {
   block: Int!
   transactionHash: String!
 }
+
+type BuyCouponEvent @entity {
+  id: ID!
+  buyer: String!
+  nftID: BigInt!
+  escrow: String!
+  timestamp: BigInt!
+  block: Int!
+  transactionHash: String!
+}

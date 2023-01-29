@@ -11,6 +11,9 @@ export const events = {
     ApprovalForAll: new LogEvent<([owner: string, operator: string, approved: boolean] & {owner: string, operator: string, approved: boolean})>(
         abi, '0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31'
     ),
+    BuyCouponEvent: new LogEvent<([executor: string, nftID: ethers.BigNumber, escrow: string] & {executor: string, nftID: ethers.BigNumber, escrow: string})>(
+        abi, '0xb1d7aa25b2697bbe6c3798cb3f390ede329d495814bed22c049f4d6606fa63f7'
+    ),
     Minted: new LogEvent<([minter: string, nftID: ethers.BigNumber, uri: string, price: ethers.BigNumber] & {minter: string, nftID: ethers.BigNumber, uri: string, price: ethers.BigNumber})>(
         abi, '0xf5c82eda717141c5f0cfeb894e7b7819c158a337b62ec13d412aecad30b0ad9e'
     ),
@@ -25,9 +28,6 @@ export const events = {
     ),
     Purchase: new LogEvent<([previousOwner: string, newOwner: string, nftID: ethers.BigNumber, uri: string] & {previousOwner: string, newOwner: string, nftID: ethers.BigNumber, uri: string})>(
         abi, '0x919be812a285f2dcdadb642b6be908c8924fb8e7c1bb20ceb040ed312b03c813'
-    ),
-    Requested: new LogEvent<([executor: string, nftID: ethers.BigNumber] & {executor: string, nftID: ethers.BigNumber})>(
-        abi, '0x189155e729161d41c9756b8f023ae2bcb16166eb447c05edd79b57f5c29f19e3'
     ),
     Transfer: new LogEvent<([from: string, to: string, tokenId: ethers.BigNumber] & {from: string, to: string, tokenId: ethers.BigNumber})>(
         abi, '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
@@ -44,8 +44,8 @@ export const functions = {
     balanceOf: new Func<[owner: string], {owner: string}, ethers.BigNumber>(
         abi, '0x70a08231'
     ),
-    buy: new Func<[_id: ethers.BigNumber], {_id: ethers.BigNumber}, []>(
-        abi, '0xd96a094a'
+    buyCoupon: new Func<[_id: ethers.BigNumber], {_id: ethers.BigNumber}, boolean>(
+        abi, '0x86d3ebc7'
     ),
     escrowFromItem: new Func<[_: ethers.BigNumber], {}, string>(
         abi, '0x7b6ed9de'
@@ -86,17 +86,17 @@ export const functions = {
     platformAddress: new Func<[], {}, string>(
         abi, '0xdbe55e56'
     ),
-    platformFee: new Func<[], {}, ethers.BigNumber>(
+    platformFee: new Func<[], {}, number>(
         abi, '0x26232a2e'
     ),
     price: new Func<[_: ethers.BigNumber], {}, ethers.BigNumber>(
         abi, '0x26a49e37'
     ),
+    redeemCoupon: new Func<[_id: ethers.BigNumber], {_id: ethers.BigNumber}, []>(
+        abi, '0x4ffab34b'
+    ),
     renounceOwnership: new Func<[], {}, []>(
         abi, '0x715018a6'
-    ),
-    requestCoupon: new Func<[_id: ethers.BigNumber], {_id: ethers.BigNumber}, boolean>(
-        abi, '0x4332b1d4'
     ),
     'safeTransferFrom(address,address,uint256)': new Func<[from: string, to: string, tokenId: ethers.BigNumber], {from: string, to: string, tokenId: ethers.BigNumber}, []>(
         abi, '0x42842e0e'
@@ -110,8 +110,8 @@ export const functions = {
     setPlatformAddress: new Func<[_platformAddress: string], {_platformAddress: string}, []>(
         abi, '0xcc03c342'
     ),
-    setPlatformFee: new Func<[_platformFee: ethers.BigNumber], {_platformFee: ethers.BigNumber}, []>(
-        abi, '0x12e8e2c3'
+    setPlatformFee: new Func<[_platformFee: number], {_platformFee: number}, []>(
+        abi, '0x5cbc742c'
     ),
     supportsInterface: new Func<[interfaceId: string], {interfaceId: string}, boolean>(
         abi, '0x01ffc9a7'
@@ -133,6 +133,9 @@ export const functions = {
     ),
     updatePrice: new Func<[_tokenId: ethers.BigNumber, _price: ethers.BigNumber], {_tokenId: ethers.BigNumber, _price: ethers.BigNumber}, boolean>(
         abi, '0x82367b2d'
+    ),
+    want: new Func<[], {}, string>(
+        abi, '0x1f1fcd51'
     ),
 }
 
@@ -194,7 +197,7 @@ export class Contract extends ContractBase {
         return this.eth_call(functions.platformAddress, [])
     }
 
-    platformFee(): Promise<ethers.BigNumber> {
+    platformFee(): Promise<number> {
         return this.eth_call(functions.platformFee, [])
     }
 
@@ -212,5 +215,9 @@ export class Contract extends ContractBase {
 
     tokenURI(tokenId: ethers.BigNumber): Promise<string> {
         return this.eth_call(functions.tokenURI, [tokenId])
+    }
+
+    want(): Promise<string> {
+        return this.eth_call(functions.want, [])
     }
 }

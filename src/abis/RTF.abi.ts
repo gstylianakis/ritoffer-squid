@@ -5,10 +5,14 @@ export const ABI_JSON = [
         "inputs": [
             {
                 "type": "address",
+                "name": "_want"
+            },
+            {
+                "type": "address",
                 "name": "_platform"
             },
             {
-                "type": "uint256",
+                "type": "uint16",
                 "name": "_platformFee"
             }
         ]
@@ -54,6 +58,28 @@ export const ABI_JSON = [
                 "type": "bool",
                 "name": "approved",
                 "indexed": false
+            }
+        ]
+    },
+    {
+        "type": "event",
+        "anonymous": false,
+        "name": "BuyCouponEvent",
+        "inputs": [
+            {
+                "type": "address",
+                "name": "executor",
+                "indexed": true
+            },
+            {
+                "type": "uint256",
+                "name": "nftID",
+                "indexed": true
+            },
+            {
+                "type": "address",
+                "name": "escrow",
+                "indexed": true
             }
         ]
     },
@@ -180,23 +206,6 @@ export const ABI_JSON = [
     {
         "type": "event",
         "anonymous": false,
-        "name": "Requested",
-        "inputs": [
-            {
-                "type": "address",
-                "name": "executor",
-                "indexed": true
-            },
-            {
-                "type": "uint256",
-                "name": "nftID",
-                "indexed": true
-            }
-        ]
-    },
-    {
-        "type": "event",
-        "anonymous": false,
         "name": "Transfer",
         "inputs": [
             {
@@ -266,16 +275,21 @@ export const ABI_JSON = [
     },
     {
         "type": "function",
-        "name": "buy",
+        "name": "buyCoupon",
         "constant": false,
-        "payable": false,
+        "stateMutability": "payable",
+        "payable": true,
         "inputs": [
             {
                 "type": "uint256",
                 "name": "_id"
             }
         ],
-        "outputs": []
+        "outputs": [
+            {
+                "type": "bool"
+            }
+        ]
     },
     {
         "type": "function",
@@ -522,7 +536,7 @@ export const ABI_JSON = [
         "inputs": [],
         "outputs": [
             {
-                "type": "uint256"
+                "type": "uint16"
             }
         ]
     },
@@ -545,15 +559,7 @@ export const ABI_JSON = [
     },
     {
         "type": "function",
-        "name": "renounceOwnership",
-        "constant": false,
-        "payable": false,
-        "inputs": [],
-        "outputs": []
-    },
-    {
-        "type": "function",
-        "name": "requestCoupon",
+        "name": "redeemCoupon",
         "constant": false,
         "payable": false,
         "inputs": [
@@ -562,11 +568,15 @@ export const ABI_JSON = [
                 "name": "_id"
             }
         ],
-        "outputs": [
-            {
-                "type": "bool"
-            }
-        ]
+        "outputs": []
+    },
+    {
+        "type": "function",
+        "name": "renounceOwnership",
+        "constant": false,
+        "payable": false,
+        "inputs": [],
+        "outputs": []
     },
     {
         "type": "function",
@@ -651,7 +661,7 @@ export const ABI_JSON = [
         "payable": false,
         "inputs": [
             {
-                "type": "uint256",
+                "type": "uint16",
                 "name": "_platformFee"
             }
         ],
@@ -779,6 +789,19 @@ export const ABI_JSON = [
         "outputs": [
             {
                 "type": "bool"
+            }
+        ]
+    },
+    {
+        "type": "function",
+        "name": "want",
+        "constant": true,
+        "stateMutability": "view",
+        "payable": false,
+        "inputs": [],
+        "outputs": [
+            {
+                "type": "address"
             }
         ]
     }

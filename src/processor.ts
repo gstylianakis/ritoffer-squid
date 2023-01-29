@@ -1,7 +1,7 @@
 // src/processor.ts
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { lookupArchive } from "@subsquid/archive-registry";
-import { CHAIN_NODE, processTransfer } from "./contract";
+import { CHAIN_NODE, processEvents } from "./contract";
 import * as rtf from "./abis/rtf";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 
@@ -14,12 +14,16 @@ processor
     range: { from: 2678722 },
     filter: [rtf.events.Minted?.topic],
   })
+  .addEvmLog(contractAddress, {
+    range: { from: 2678722 },
+    filter: [rtf.events.BuyCouponEvent?.topic],
+  })
   .setDataSource({
     chain: CHAIN_NODE,
     archive: lookupArchive("moonbeam", { release: "FireSquid" }),
   });
 
 processor.run(database, async (ctx) => {
-    console.log("Processing Events");
-    await processTransfer(ctx);
+  console.log("Processing Events");
+  await processEvents(ctx);
 });
