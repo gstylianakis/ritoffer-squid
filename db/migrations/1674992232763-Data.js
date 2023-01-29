@@ -1,5 +1,5 @@
-module.exports = class Data1674930013943 {
-    name = 'Data1674930013943'
+module.exports = class Data1674992232763 {
+    name = 'Data1674992232763'
 
     async up(db) {
         await db.query(`CREATE TABLE "owner" ("id" character varying NOT NULL, "balance" numeric, CONSTRAINT "PK_8e86b6b9f94aece7d12d465dc0c" PRIMARY KEY ("id"))`)
@@ -11,6 +11,8 @@ module.exports = class Data1674930013943 {
         await db.query(`CREATE TABLE "token" ("id" character varying NOT NULL, "uri" text, "is_available" boolean, "is_listed" boolean, "price" numeric, "owner_id" character varying, "contract_id" character varying, CONSTRAINT "PK_82fae97f905930df5d62a702fc9" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_77fa31a311c711698a0b944382" ON "token" ("owner_id") `)
         await db.query(`CREATE INDEX "IDX_5c85dbbd108d915a13f71de39a" ON "token" ("contract_id") `)
+        await db.query(`CREATE TABLE "escrow_record" ("id" character varying NOT NULL, "address" text NOT NULL, "buyer" text, "status" text, "block" integer NOT NULL, "transaction_hash" text NOT NULL, "timestamp" numeric NOT NULL, "token_id" character varying, CONSTRAINT "PK_056680d0aa0701b470aeb6fa241" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_4f132493a71771e4980337fcb2" ON "escrow_record" ("token_id") `)
         await db.query(`CREATE TABLE "mint_event" ("id" character varying NOT NULL, "minter" text NOT NULL, "nft_id" numeric NOT NULL, "uri" text NOT NULL, "timestamp" numeric NOT NULL, "block" integer NOT NULL, "transaction_hash" text NOT NULL, CONSTRAINT "PK_c9abd6d2c19a587aac1641c7dee" PRIMARY KEY ("id"))`)
         await db.query(`CREATE TABLE "buy_coupon_event" ("id" character varying NOT NULL, "buyer" text NOT NULL, "nft_id" numeric NOT NULL, "escrow" text NOT NULL, "timestamp" numeric NOT NULL, "block" integer NOT NULL, "transaction_hash" text NOT NULL, CONSTRAINT "PK_9a477525ac5e12ef482c756206d" PRIMARY KEY ("id"))`)
         await db.query(`ALTER TABLE "transfer" ADD CONSTRAINT "FK_b27b1150b8a7af68424540613c7" FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -18,6 +20,7 @@ module.exports = class Data1674930013943 {
         await db.query(`ALTER TABLE "transfer" ADD CONSTRAINT "FK_0751309c66e97eac9ef11493623" FOREIGN KEY ("to_id") REFERENCES "owner"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "token" ADD CONSTRAINT "FK_77fa31a311c711698a0b9443823" FOREIGN KEY ("owner_id") REFERENCES "owner"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "token" ADD CONSTRAINT "FK_5c85dbbd108d915a13f71de39ad" FOREIGN KEY ("contract_id") REFERENCES "contract"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+        await db.query(`ALTER TABLE "escrow_record" ADD CONSTRAINT "FK_4f132493a71771e4980337fcb2d" FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     }
 
     async down(db) {
@@ -30,6 +33,8 @@ module.exports = class Data1674930013943 {
         await db.query(`DROP TABLE "token"`)
         await db.query(`DROP INDEX "public"."IDX_77fa31a311c711698a0b944382"`)
         await db.query(`DROP INDEX "public"."IDX_5c85dbbd108d915a13f71de39a"`)
+        await db.query(`DROP TABLE "escrow_record"`)
+        await db.query(`DROP INDEX "public"."IDX_4f132493a71771e4980337fcb2"`)
         await db.query(`DROP TABLE "mint_event"`)
         await db.query(`DROP TABLE "buy_coupon_event"`)
         await db.query(`ALTER TABLE "transfer" DROP CONSTRAINT "FK_b27b1150b8a7af68424540613c7"`)
@@ -37,5 +42,6 @@ module.exports = class Data1674930013943 {
         await db.query(`ALTER TABLE "transfer" DROP CONSTRAINT "FK_0751309c66e97eac9ef11493623"`)
         await db.query(`ALTER TABLE "token" DROP CONSTRAINT "FK_77fa31a311c711698a0b9443823"`)
         await db.query(`ALTER TABLE "token" DROP CONSTRAINT "FK_5c85dbbd108d915a13f71de39ad"`)
+        await db.query(`ALTER TABLE "escrow_record" DROP CONSTRAINT "FK_4f132493a71771e4980337fcb2d"`)
     }
 }

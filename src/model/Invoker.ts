@@ -5,6 +5,7 @@ import {
 } from "@subsquid/substrate-processor/lib/interfaces/dataSelection";
 import { Store } from "@subsquid/typeorm-store";
 import { logger } from "ethers";
+import { hasUncaughtExceptionCaptureCallback } from "process";
 import Command from "./Command";
 
 export default class Invoker {
@@ -23,17 +24,21 @@ export default class Invoker {
     let entitiesCommand = await command.parseEvents();
     this.entities.push([...entitiesCommand]);
   }
+
   public async save(): Promise<void> {
     let entities = this.entities.flat();
     let entitiesByType = new Map();
     let uniqueIds = new Set();
+    let type, id;
     entities.forEach((entity) => {
-      let type = entity.constructor.name;
-      if (uniqueIds.has(entity.id)) {
+      type = entity.constructor.name;
+      id = `${type}-${entity.id}`;
+      if (uniqueIds.has(id)) {
         return;
       }
-      uniqueIds.add(entity.id);
+      uniqueIds.add(id);
       if (entitiesByType.has(type)) {
+        uniqueIds.add(entity.id);
         entitiesByType.get(type).push(entity);
       } else {
         entitiesByType.set(type, [entity]);

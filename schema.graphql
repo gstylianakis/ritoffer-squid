@@ -23,6 +23,20 @@ type Contract @entity {
   mintedTokens: [Token!]! @derivedFrom(field: "contract")
 }
 
+type EscrowRecord @entity {
+  id: ID!
+  token: Token!
+  address: String!
+  # price: Float
+  # deposit: Float
+  buyer: String
+  # seller: String
+  status: String
+  block: Int!
+  transactionHash: String!
+  timestamp: BigInt!
+}
+
 type Transfer @entity {
   id: ID!
   token: Token!
