@@ -5,7 +5,6 @@ import {
 } from "@subsquid/substrate-processor/lib/interfaces/dataSelection";
 import { Store } from "@subsquid/typeorm-store";
 import { logger } from "ethers";
-import { hasUncaughtExceptionCaptureCallback } from "process";
 import Command from "./Command";
 
 export default class Invoker {
@@ -49,5 +48,6 @@ export default class Invoker {
       logger.info("Saving entities of type", type);
       await this.ctx.store.save(entities);
     }
+
   }
 }

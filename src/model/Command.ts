@@ -90,11 +90,12 @@ export class CommandBuy implements Command {
   async parseEvents(): Promise<Array<EntityTypes>> {
     logger.info("-- parsing buy event --");
     const log = (this.event as any)?.args.log;
+    
     const { executor, nftID, escrow } = rtf.events.BuyCouponEvent.decode({
       topics: log.topics,
       data: log.data,
     });
-
+    
     const buyEvent = new BuyCouponEvent({
       id: this.event.id,
       buyer: executor,
@@ -122,7 +123,7 @@ export class CommandBuy implements Command {
       timestamp: BigInt(this.block.timestamp),
       block: this.block.height,
     });
-
+   
     return [buyEvent, owner, token, escrowRec];
   }
 }

@@ -2,8 +2,8 @@ type Token @entity {
   id: ID!
   owner: Owner
   uri: String
-  transfers: [Transfer!]! @derivedFrom(field: "token")
-  contract: Contract
+  transfers: [Transfer!]! @derivedFrom(field: "token") @cardinality(value: 5)
+  contract: Contract @cardinality(value: 1)
   isAvailable: Boolean
   isListed: Boolean
   price: Float
@@ -15,7 +15,7 @@ type Owner @entity {
   balance: BigInt
 }
 
-type Contract @entity {
+type Contract @entity @cardinality(value: 5){
   id: ID!
   name: String
   symbol: String
