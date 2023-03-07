@@ -2,7 +2,7 @@
 import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
 import { lookupArchive } from "@subsquid/archive-registry";
 import { CHAIN_NODE, processEvents } from "./contract";
-import * as rtf from "./abis/rtf";
+import * as rtf from "./abis/RTF";
 import { TypeormDatabase } from "@subsquid/typeorm-store";
 
 const database = new TypeormDatabase();
