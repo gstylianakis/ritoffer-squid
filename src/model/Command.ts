@@ -5,7 +5,7 @@ import {
   EventItem,
 } from "@subsquid/substrate-processor/lib/interfaces/dataSelection";
 import { ethers, logger } from "ethers";
-import * as rtf from "../abis/rtf";
+import * as rtf from "../abis/RTF";
 import { getContractEntity } from "../contract";
 import {
   Owner,
